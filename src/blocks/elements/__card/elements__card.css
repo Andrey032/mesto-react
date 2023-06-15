@@ -1,0 +1,10 @@
+.elements__card {
+  width: 282px;
+  min-height: 361px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  list-style: none;
+  margin: 0 auto;
+  position: relative;
+}

@@ -1,0 +1,5 @@
+.elements__card-item {
+  margin: 25px 15px 0 21px;
+  display: flex;
+  justify-content: space-between;
+}

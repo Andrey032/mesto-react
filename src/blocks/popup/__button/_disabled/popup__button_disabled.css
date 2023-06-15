@@ -1,0 +1,7 @@
+.popup__button_disabled {
+background-color: #FFFFFF;
+border: 1px solid rgba(0, 0, 0, 0.15);
+border-radius: 2px;
+color: rgba(0, 0, 0, 0.15);
+cursor: not-allowed;
+}
