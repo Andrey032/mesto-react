@@ -8,4 +8,4 @@
 2. Написан на функциональных компонентах.
 3. Разметка портирована в JSX.
 
-[Ссылка на проект Место-React](https://andrey032.github.io/mesto/)
+[Ссылка на проект Место-React](https://andrey032.github.io/mesto-react/)
