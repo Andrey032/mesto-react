@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import useFormValidation from "../../utils/useFormValidation";
 import PopupWithForm from "../PopupWithForm/PopupWithForm";
 
@@ -5,17 +6,16 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
 
   const { handleChange, values, errors, isValid, isInputValid, resetAllState } = useFormValidation();
 
-  function resetSettingsAfterClosing() {
-    onClose()
+  useEffect(() => {
     resetAllState()
-  }
+  }, [isOpen, resetAllState])
 
   function handleSubmit(evt) {
     evt.preventDefault()
     onAddPlace({
       name: values.name,
       link: values.link
-    }, resetAllState)
+    })
   }
 
   return (
@@ -24,7 +24,7 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       title="Новое место"
       textButton="Создать"
       isOpen={isOpen}
-      onClose={resetSettingsAfterClosing}
+      onClose={onClose}
       isValid={isValid}
       onSubmit={handleSubmit}
     >

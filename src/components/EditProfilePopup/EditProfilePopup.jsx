@@ -14,20 +14,20 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     setValue('userjob', currentUser.about)
   }, [currentUser, setValue])
 
-  function resetSettingsAfterClosing() {
-    onClose()
+  useEffect(() => {
     resetAllState({
       username: currentUser.name,
       userjob: currentUser.about
     })
-  }
+  }, [isOpen, currentUser, resetAllState])
+
 
   function handleSubmit(evt) {
     evt.preventDefault()
     onUpdateUser({
       username: values.username,
       userjob: values.userjob
-    }, resetAllState)
+    })
   }
 
   return (
@@ -36,7 +36,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       title="Редактировать профиль"
       textButton="Сохранить"
       isOpen={isOpen}
-      onClose={resetSettingsAfterClosing}
+      onClose={onClose}
       isValid={isValid}
       onSubmit={handleSubmit}
     >

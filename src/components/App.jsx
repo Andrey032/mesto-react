@@ -26,7 +26,7 @@ function App() {
   const [isDeletedCardId, setIsDeletedCardId] = useState('');
 
   //Функция сброса стейта
-  const settingAllStates = useCallback(() => {
+  const closeModalWindows = useCallback(() => {
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -34,57 +34,44 @@ function App() {
     setDeletePopupOpen(false);
   }, []);
 
-  //Функция закрытия попап по ESC
-  const closingAllPopupsByEsc = useCallback(
-    (evt) => {
-      if (evt.key === "Escape") {
-        settingAllStates();
-        document.removeEventListener("keydown", closingAllPopupsByEsc);
+  //Хук для закрытия попапов по Esc
+  useEffect(() => {
+    const handleEsc = (evt) => {
+      if (evt.keyCode === 27) {
+        closeModalWindows()
       }
-    },
-    [settingAllStates]
-  );
+    };
+    window.addEventListener('keydown', handleEsc);
 
-  //Функция для снятия слушателей
-  const closeAllPopaps = useCallback(() => {
-    settingAllStates();
-    document.removeEventListener("keydown", closingAllPopupsByEsc);
-  }, [settingAllStates, closingAllPopupsByEsc]);
-
-  //Функция для добавления слушателей
-  function addPopupListener() {
-    document.addEventListener("keydown", closingAllPopupsByEsc);
-  }
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [closeModalWindows])
 
   //Функция изменения состояния для Попап редактировать профиль
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
-    addPopupListener();
   }
 
   //Функция изменения состояния для Попап редактировать аватар
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
-    addPopupListener();
   }
 
   //Функция изменения состояния для Попап добавить картинку
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
-    addPopupListener();
   }
 
   //Функция изменения состояния для Попап открыть картинку
   function handleCardClick(card) {
     setSelectedCard(card);
     setIsImagePopupOpen(true);
-    addPopupListener();
   }
 
   //Функция изменения состояния для Попап удаления картинки
   function handleCardDelete(cardId) {
     setDeletePopupOpen(true);
-    addPopupListener();
     setIsDeletedCardId(cardId)
   }
 
@@ -128,40 +115,37 @@ function App() {
         setCards(cards.filter(card => {
           return card._id !== isDeletedCardId
         }))
-        closeAllPopaps()
+        closeModalWindows()
       })
       .catch((err) => console.log(err));
   }
 
   //Запрос на сервер для изменения данных пользователя
-  function handleUpdateUser(data, reset) {
+  function handleUpdateUser(data) {
     api.setUserInfo(data)
       .then(res => {
         setCurrentUser(res)
-        closeAllPopaps()
-        reset()
+        closeModalWindows()
       })
       .catch((err) => console.log(err));
   }
 
   //Запрос на сервер для изменения аватара
-  function handleUpdateAvatar(data, reset) {
+  function handleUpdateAvatar(data) {
     api.setUserAvatar(data)
       .then(res => {
         setCurrentUser(res)
-        closeAllPopaps()
-        reset()
+        closeModalWindows()
       })
       .catch((err) => console.log(err));
   }
 
   //Запрос на сервер для добавления карточки
-  function handleAddPlaceSubmit(data, reset) {
+  function handleAddPlaceSubmit(data) {
     api.addСards(data)
       .then(res => {
         setCards([res, ...cards])
-        closeAllPopaps()
-        reset()
+        closeModalWindows()
       })
   }
 
@@ -185,19 +169,19 @@ function App() {
 
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopaps}
+          onClose={closeModalWindows}
           onUpdateUser={handleUpdateUser}
         />
 
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopaps}
+          onClose={closeModalWindows}
           onAddPlace={handleAddPlaceSubmit}
         />
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopaps}
+          onClose={closeModalWindows}
           onUpdateAvatar={handleUpdateAvatar}
         />
 
@@ -206,14 +190,14 @@ function App() {
           title="Вы уверены?"
           textButton="Да"
           isOpen={isDeletePopupOpen}
-          onClose={closeAllPopaps}
+          onClose={closeModalWindows}
           onSubmit={handleDeletionOnSubmit}
         />
 
         <ImagePopup
           card={selectedCard}
           isOpen={isImagePopupOpen}
-          onClose={closeAllPopaps}
+          onClose={closeModalWindows}
         />
       </div>
     </CurrentUserContext.Provider>
