@@ -1,29 +1,19 @@
-import { useEffect, useState } from "react";
-import api from "../../utils/api.js";
+import { useContext } from "react";
 import Card from "../Card/Card.jsx";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
+import Spinner from "../Spinner/Spinner.jsx";
 
 export default function Main({
   onEditProfile,
   onEditAvatar,
   onAddPlace,
   onOpenImage,
+  onCardDelete,
+  onCardLike,
+  cards,
+  isLoading,
 }) {
-  const [userName, setUserName] = useState("");
-  const [userDescription, setUserDescription] = useState("");
-  const [userAvatar, setUserAvatar] = useState("");
-  const [cards, setCards] = useState([]);
-
-  useEffect(() => {
-    Promise.all([api.getMyInfo(), api.getInitialCards()])
-      .then(([user, cards]) => {
-        setUserName(user.name);
-        setUserDescription(user.about);
-        setUserAvatar(user.avatar);
-        cards.forEach((item) => (item.myId = user._id));
-        setCards(cards);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  const currentUser = useContext(CurrentUserContext);
 
   return (
     <main className="content">
@@ -33,11 +23,15 @@ export default function Main({
           type="button"
           onClick={onEditAvatar}
         >
-          <img className="profile__avatar" src={userAvatar} alt="аватар" />
+          <img
+            className="profile__avatar"
+            src={currentUser.avatar}
+            alt="аватар"
+          />
         </button>
         <div className="profile__info">
-          <h1 className="profile__name">{userName}</h1>
-          <p className="profile__profession">{userDescription}</p>
+          <h1 className="profile__name">{currentUser.name}</h1>
+          <p className="profile__profession">{currentUser.about}</p>
           <button
             className="profile__edit-button"
             type="button"
@@ -54,11 +48,21 @@ export default function Main({
       </section>
       <section aria-label="Галерея фото">
         <ul className="elements">
-          {cards.map((data) => {
-            return (
-              <Card card={data} onOpenImage={onOpenImage} key={data._id} />
-            );
-          })}
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            cards.map((data) => {
+              return (
+                <Card
+                  card={data}
+                  onOpenImage={onOpenImage}
+                  key={data._id}
+                  onCardDelete={onCardDelete}
+                  onCardLike={onCardLike}
+                />
+              );
+            })
+          )}
         </ul>
       </section>
     </main>

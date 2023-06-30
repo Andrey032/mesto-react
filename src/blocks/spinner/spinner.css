@@ -1,0 +1,9 @@
+.spinner {
+  background-image: url(../../images/Loader.gif);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 50px;
+  width: 50px;
+  justify-self: center;
+}
