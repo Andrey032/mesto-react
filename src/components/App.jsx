@@ -34,19 +34,23 @@ function App() {
     setDeletePopupOpen(false);
   }, []);
 
+  const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddPlacePopupOpen || isImagePopupOpen || isDeletePopupOpen;
+
   //Хук для закрытия попапов по Esc
   useEffect(() => {
     const handleEsc = (evt) => {
       if (evt.keyCode === 27) {
         closeModalWindows()
       }
-    };
-    window.addEventListener('keydown', handleEsc);
+    }
+    if (isOpen) {
+      window.addEventListener('keydown', handleEsc)
 
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [closeModalWindows])
+      return () => {
+        window.removeEventListener('keydown', handleEsc)
+      }
+    }
+  }, [closeModalWindows, isOpen])
 
   //Функция изменения состояния для Попап редактировать профиль
   function handleEditProfileClick() {
